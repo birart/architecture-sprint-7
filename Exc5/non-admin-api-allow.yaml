@@ -1,0 +1,46 @@
+# 1. Разрешаем back-end-api входящий трафик только от front-end и исходящий только во front-end
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-frontend-to-backend-api
+spec:
+  policyTypes:
+    - Ingress
+    - Egress
+  podSelector:
+    matchLabels:
+      role: back-end-api
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              role: front-end
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              role: front-end
+
+# 2. Разрешаем admin-back-end-api входящий трафик только от admin-front-end и исходящий только в admin-front-end
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-admin-frontend-to-admin-backend-api
+spec:
+  policyTypes:
+    - Ingress
+    - Egress
+  podSelector:
+    matchLabels:
+      role: admin-back-end-api
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              role: admin-front-end
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              role: admin-front-end
