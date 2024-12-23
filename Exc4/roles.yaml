@@ -1,0 +1,46 @@
+# Инженеры по ИБ. Управление секретами
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: security
+rules:
+  - apiGroups: [ "" ]
+    resources: [ "configmaps", "secrets" ]
+    verbs: [ "get", "list", "watch", "create", "update", "delete", "patch" ]
+---
+
+# Администратор кластера
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: admin
+rules:
+  - apiGroups: [ "", "apps" ]
+    resources: [ "deployments", "pods", "services", "replicasets", "daemonsets" ]
+    verbs: [ "get", "list", "watch", "create", "update", "delete", "patch" ]
+---
+
+# Devops инженеры. Могут создавать поды и просматривать другие ресурсы (кроме секретов)
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: devops
+rules:
+  - apiGroups: [ "" ]
+    resources: [ "pods"]
+    verbs: [ "get", "list", "watch", "create", "update", "delete", "patch" ]
+  - apiGroups: [ "", "apps", "events.k8s.io"]
+    resources: [ "deployments", "services", "replicasets", "daemonsets", "events"]
+    verbs: [ "get", "list", "watch" ]
+---
+
+# Разработчики. Могут просматривать ресурсы
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: developer
+rules:
+  - apiGroups: [ "", "apps" ]
+    resources: [ "deployments", "pods", "services", "replicasets" ]
+    verbs: [ "get", "list", "watch" ]
+---
